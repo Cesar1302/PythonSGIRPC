@@ -424,8 +424,8 @@ class DescargaPEMBU:
      
     def proceso(self):
         
-        dirtxt='C:/Users/jclm1/Documents/SGIRPC/archivotemporal/'+self.nombre+'.txt'
-        dircsv='C:/Users/jclm1/Documents/SGIRPC/datos/'+self.nombre+'enp1.csv'
+        dirtxt='C:/Users/meteorologia/Downloads/'+self.nombre+'.txt'
+        dircsv='C:/Users/meteorologia/Documents/Mapas/EMAS/'+self.nombre+'enp1.csv'
         url = 'https://www.ruoa.unam.mx/pembu/datos/'+self.nombre+'/downld02.txt'
 
         print(dirtxt)
