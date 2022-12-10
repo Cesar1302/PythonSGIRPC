@@ -50,8 +50,8 @@ class DescargaSGIRPC:
         
     def proceso(self):
         
-        dirtxt='C:/Users/meteorologia/Downloads/'+self.clave+'.txt'
-        dircsv='C:/Users/meteorologia/Documents/Mapas/EMAS/'+self.clave+'.csv'
+        dirtxt='C:/Users/jclm1/Documents/SGIRPC/archivotemporal/'+self.clave+'.txt'
+        dircsv='C:/Users/jclm1/Documents/SGIRPC/datos/'+self.clave+'.csv'
         url = 'http://189.254.33.151/stn/'+self.nombre+'/downld02.txt'
 
         print(dirtxt)
