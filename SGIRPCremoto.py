@@ -11,7 +11,7 @@ import seaborn as sb
 from os import remove
 
 now = datetime.now()
-
+#Obtenemos la fecha en los formatos correspondientes
 yesterday=now-timedelta(days=1)
 print(yesterday)
 hoy0=datetime.strftime(now,'%d').lstrip('0')
@@ -42,13 +42,13 @@ fecha_ayerc=  "," + ayer1 +"/"+ mesayer1 +"/"+ añoayer1
 print("la fecha de hoy con dos digitos es " + fecha_ayer1)
 
 espacio = '-------------'
-
+#Se genera la cla clase para poder asignar nombres y claves a cada estacion
 class DescargaSGIRPC:
     def __init__(self, nombre, clave):
         self.nombre = nombre
         self.clave = clave
         
-    def proceso(self):
+    def proceso(self):    #Asignamos una funcion la cual estara repitiendose dentro de la clase padre para cada estacion que se asignara en al final de la def
         
         dirtxt='C:/Users/jclm1/Documents/SGIRPC/archivotemporal/'+self.clave+'.txt'
         dircsv='C:/Users/jclm1/Documents/SGIRPC/datos/'+self.clave+'.csv'
@@ -60,7 +60,7 @@ class DescargaSGIRPC:
 
         print('Buscando datos de',self.clave)
 
-        try:
+        try:   #Con un request se realiza el proceso para la descarga/copia de datos de las estaciones en la web
             print(espacio)
             file1 = dirtxt
             r = urllib.request.urlopen(url)
@@ -431,6 +431,38 @@ class DescargaPEMBU:
         print(dirtxt)
         print(dircsv)
         print(url)
+
+        print("Descargando los datos de",self.nombre)
+
+        try:
+            print(espacio)
+            file1=dirtxt
+            r=urllib.request.urlopen(url)
+            f=open(file1,"wb")
+            f.write(r.read())
+            f.close()
+            print("Datos de",self.nombre,"descargados")
+            
+        except:
+            print('Datos de la estación',self.nombre,'descargados')
+
+        
+        try:  #Se editara el archivo txt donde se descargaron los datos de la estacion
+            with open(dirtxt,'r') as fr:  #r es de read
+                lines=fr.readlines()   #leyendo linea por linea
+                ptr=1  #posicion del puntero
+
+                with open(dirtxt,'w') as fw:
+                    for line in lines:
+                        
+                        if ptr != 1:
+                            fw.write(line)
+                        ptr += 1
+            print("Primera fila eliminada")
+        except:
+            print("Ocurrio un problema al momento de elimonar la primera linea del txt o al leer el archivo")
+                
+    
 prepa1=DescargaPEMBU("enp1")
 prepa1.proceso()
         
