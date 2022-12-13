@@ -452,7 +452,7 @@ class DescargaPEMBU:
                 lines=fr.readlines()   #leyendo linea por linea
                 ptr=1  #posicion del puntero
 
-                with open(dirtxt,'w') as fw:
+                with open(dirtxt,'w') as fw: #abre el archivo y con w va a escribir o sobreescribir en el 
                     for line in lines:
                         
                         if ptr != 1:
@@ -461,9 +461,14 @@ class DescargaPEMBU:
             print("Primera fila eliminada")
         except:
             print("Ocurrio un problema al momento de elimonar la primera linea del txt o al leer el archivo")
-                
+        
+        pembu=open(dirtxt)
+        texto=pembu.read()
+        print(texto)
     
 prepa1=DescargaPEMBU("enp1")
 prepa1.proceso()
+
+
         
         
