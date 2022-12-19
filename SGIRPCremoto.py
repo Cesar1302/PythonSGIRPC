@@ -42,7 +42,7 @@ fecha_ayerc=  "," + ayer1 +"/"+ mesayer1 +"/"+ añoayer1
 print("la fecha de hoy con dos digitos es " + fecha_ayer1)
 
 espacio = '-------------'
-#Se genera la cla clase para poder asignar nombres y claves a cada estacion
+#Se genera la clase para poder asignar nombres y claves a cada estacion
 class DescargaSGIRPC:
     def __init__(self, nombre, clave):
         self.nombre = nombre
@@ -72,17 +72,17 @@ class DescargaSGIRPC:
 
             try:
                 with open(dirtxt, 'r') as fr:
-                    # reading line by line
+                    # leyendo linea por linea 
                     lines = fr.readlines()
 
-                    # pointer for position
+                    # posicion del puntero
                     ptr = 1
 
-                    # opening in writing mode
+                    # abriendo el archivo en modo de escritura
                     with open(dirtxt, 'w') as fw:
                         for line in lines:
 
-                            # we want to remove 5th line
+                            # removemos la primera linea
                             if ptr != 1:
                                 fw.write(line)
                             ptr += 1
@@ -93,17 +93,15 @@ class DescargaSGIRPC:
 
             try:
                 with open(dirtxt, 'r') as fr:
-                    # reading line by line
+                    
                     lines = fr.readlines()
 
-                    # pointer for position
                     ptr = 1
 
-                    # opening in writing mode
                     with open(dirtxt, 'w') as fw:
                         for line in lines:
 
-                            # we want to remove 5th line
+                            # removemos la segunda linea
                             if ptr != 2:
                                 fw.write(line)
                             ptr += 1
@@ -418,56 +416,6 @@ ursula.proceso()
 xochimilco=DescargaSGIRPC("xochimilco","TLHS")
 xochimilco.proceso()
 
-class DescargaPEMBU:
-    def __init__(self, nombre):
-        self.nombre = nombre
-     
-    def proceso(self):
-        
-        dirtxt='C:/Users/jclm1/Documents/SGIRPC/archivotemporal/'+self.nombre+'.txt'
-        dircsv='C:/Users/jclm1/Documents/SGIRPC/datos/'+self.nombre+'enp1.csv'
-        url = 'https://www.ruoa.unam.mx/pembu/datos/'+self.nombre+'/downld02.txt'
-
-        print(dirtxt)
-        print(dircsv)
-        print(url)
-
-        print("Descargando los datos de",self.nombre)
-
-        try:
-            print(espacio)
-            file1=dirtxt
-            r=urllib.request.urlopen(url)
-            f=open(file1,"wb")
-            f.write(r.read())
-            f.close()
-            print("Datos de",self.nombre,"descargados")
-            
-        except:
-            print('Datos de la estación',self.nombre,'descargados')
-
-        
-        try:  #Se editara el archivo txt donde se descargaron los datos de la estacion
-            with open(dirtxt,'r') as fr:  #r es de read
-                lines=fr.readlines()   #leyendo linea por linea
-                ptr=1  #posicion del puntero
-
-                with open(dirtxt,'w') as fw: #abre el archivo y con w va a escribir o sobreescribir en el 
-                    for line in lines:
-                        
-                        if ptr != 1:
-                            fw.write(line)
-                        ptr += 1
-            print("Primera fila eliminada")
-        except:
-            print("Ocurrio un problema al momento de elimonar la primera linea del txt o al leer el archivo")
-        
-        pembu=open(dirtxt)
-        texto=pembu.read()
-        print(texto)
-    
-prepa1=DescargaPEMBU("enp1")
-prepa1.proceso()
 
 
         
