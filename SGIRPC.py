@@ -417,34 +417,4 @@ ursula.proceso()
 xochimilco=DescargaSGIRPC("xochimilco","TLHS")
 xochimilco.proceso()
 
-class DescargaPEMBU:
-    def __init__(self, nombre):
-        self.nombre = nombre
-     
-    def proceso(self):
-        
-        dirtxt='C:/Users/meteorologia/Downloads/'+self.nombre+'.txt'
-        dircsv='C:/Users/meteorologia/Documents/Mapas/EstacionesSGIRPC/'+self.nombre+'.csv'
-        url = 'https://www.ruoa.unam.mx/pembu/datos/'+self.nombre+'/downld02.txt'
-
-        print(dirtxt)
-        print(dircsv)
-        print(url)
-        print("Descargando los datos de la estación",self.nombre)
-        
-        try:
-            print(espacio)
-            file1=dirtxt
-            r=urllib.request.urlopen(url)
-            f=open(file1,"wb")
-            f.write(r.read())
-            f.close()
-            print("Datos de",self.nombre,"obtenidos")
-        
-
-        except:
-            print("No se logro obtener los datos de la estacion",self.nombre)
-
-prepa1=DescargaPEMBU("enp1")
-prepa1.proceso()
         

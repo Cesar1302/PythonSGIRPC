@@ -348,8 +348,8 @@ class DescargaPEMBU:
         estacionunam1.close()
         estacionunam.close()
 
-        # estacionunam=pd.read_csv(dircsv, index_col=0, header=0)
-        # print(estacionunam)
+        estacionunam=pd.read_csv(dircsv, index_col=0, header=0)
+        print(estacionunam)
         
         # estacionunam['fechaHora']=estacionunam['Fecha'].map(str)  + ' ' + estacionunam['Time'].map(str)
         # estacionunam
