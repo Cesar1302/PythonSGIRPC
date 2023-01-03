@@ -72,17 +72,17 @@ class DescargaSGIRPC:
 
             try:
                 with open(dirtxt, 'r') as fr:
-                    # reading line by line
+                    # Leyendo linea por linea 
                     lines = fr.readlines()
 
-                    # pointer for position
+                    # Posicion del puntero
                     ptr = 1
 
-                    # opening in writing mode
+                    # Abiendo en modo de escritura
                     with open(dirtxt, 'w') as fw:
                         for line in lines:
 
-                            # we want to remove 5th line
+                            # Se elimina la primera linea 
                             if ptr != 1:
                                 fw.write(line)
                             ptr += 1
@@ -93,17 +93,16 @@ class DescargaSGIRPC:
 
             try:
                 with open(dirtxt, 'r') as fr:
-                    # reading line by line
+                    
                     lines = fr.readlines()
 
-                    # pointer for position
                     ptr = 1
 
-                    # opening in writing mode
+                    # Abriendo en modo de escritura
                     with open(dirtxt, 'w') as fw:
                         for line in lines:
 
-                            # we want to remove 5th line
+                            # Eliminamos la segunda linea
                             if ptr != 2:
                                 fw.write(line)
                             ptr += 1
@@ -425,13 +424,27 @@ class DescargaPEMBU:
     def proceso(self):
         
         dirtxt='C:/Users/meteorologia/Downloads/'+self.nombre+'.txt'
-        dircsv='C:/Users/meteorologia/Documents/Mapas/EstacionesSGIRPC/'+self.nombre+'enp1.csv'
+        dircsv='C:/Users/meteorologia/Documents/Mapas/EstacionesSGIRPC/'+self.nombre+'.csv'
         url = 'https://www.ruoa.unam.mx/pembu/datos/'+self.nombre+'/downld02.txt'
 
         print(dirtxt)
         print(dircsv)
         print(url)
+        print("Descargando los datos de la estación",self.nombre)
+        
+        try:
+            print(espacio)
+            file1=dirtxt
+            r=urllib.request.urlopen(url)
+            f=open(file1,"wb")
+            f.write(r.read())
+            f.close()
+            print("Datos de",self.nombre,"obtenidos")
+        
+
+        except:
+            print("No se logro obtener los datos de la estacion",self.nombre)
+
 prepa1=DescargaPEMBU("enp1")
 prepa1.proceso()
-        
         
