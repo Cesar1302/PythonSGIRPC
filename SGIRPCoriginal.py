@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 from os import remove
+import threading
 
 now = datetime.now()
 
@@ -42,79 +43,78 @@ fecha_ayerc=  "," + ayer1 +"/"+ mesayer1 +"/"+ añoayer1
 print("la fecha de hoy con dos digitos es " + fecha_ayer1)
 
 espacio = '-------------'
-#Se genera la cla clase para poder asignar nombres y claves a cada estacion
 
-class DescargaPEMBU:
-    def __init__(self, nombre):
+class DescargaSGIRPC:
+    def __init__(self, nombre, clave):
         self.nombre = nombre
-     
-    def proceso(self):
-        try:
+        self.clave = clave
         
-            dirtxt='C:/Users/meteorologia/Downloads/'+self.nombre+'.txt'
-            dircsv='C:/Users/meteorologia/Documents/Mapas/EMAS/'+self.nombre+'.csv'
-            url = 'https://www.ruoa.unam.mx/pembu/datos/'+self.nombre+'/downld02.txt'
+    def proceso(self):
+        
+        dirtxt='C:/Users/meteorologia/Downloads/'+self.clave+'.txt'
+        dircsv='C:/Users/meteorologia/Documents/Mapas/EMAS/'+self.clave+'.csv'
+        url = 'http://189.254.33.151/stn/'+self.nombre+'/downld02.txt'
 
-            print(dirtxt)
-            print(dircsv)
-            print(url)
+        print(dirtxt)
+        print(dircsv)
+        print(url)
 
-            print("Descargando los datos de",self.nombre)
+        print('Buscando datos de',self.clave)
 
-            try:
-                print(espacio)
-                file1=dirtxt
-                r=urllib.request.urlopen(url)
-                f=open(file1,"wb")
-                f.write(r.read())
-                f.close()
-                print("Datos de",self.nombre,"descargados")
-                
-            except:
-                print('Datos de la estación',self.nombre,'descargados')
+        try:
+            print(espacio)
+            file1 = dirtxt
+            r = urllib.request.urlopen(url)
+            f = open(file1,'wb')
+            f.write(r.read())
+            f.close()
+            #print(file1)
+            print('Datos de la estación',self.nombre,'obtenidos')
 
-            
-            try:  #Se editara el archivo txt donde se descargaron los datos de la estacion
-                with open(dirtxt,'r') as fr:  #r es de read
-                    lines=fr.readlines()   #leyendo linea por linea
-                    ptr=1  #posicion del puntero
-
-                    with open(dirtxt,'w') as fw: #abre el archivo para que con  w sobreescriba en el 
-                        for line in lines:
-                            #ignorara la primera linea y reescribira el archivo sin esta                        
-                            if ptr != 1:   
-                                fw.write(line)
-                            ptr += 1
-                print("Primera fila eliminada")
-            except:
-                print("Ocurrio un problema al momento de eliminar la primera linea del txt o al leer el archivo")
             try:
                 with open(dirtxt, 'r') as fr:
-                    
+                    # Leyendo linea por linea 
                     lines = fr.readlines()
 
-                    # posicion del puntero
+                    # Posicion del puntero
                     ptr = 1
 
-                    # abriendo el archivo en modo de escritura
+                    # Abiendo en modo de escritura
                     with open(dirtxt, 'w') as fw:
                         for line in lines:
 
-                            # removiendo la segunda fila (hay que recordar que las fils se cuentan a partir del cero)
-                            if ptr != 2:
-                                fw.write(line)  #se guarda el archivo sin la fila donde se posiciono el puntero
+                            # Se elimina la primera linea 
+                            if ptr != 1:
+                                fw.write(line)
                             ptr += 1
                 print("Deleted")
 
             except:
                 print("Oops! No se pudo eliminar fila")
 
-            pembu=open(dirtxt)
-            texto=pembu.read()
-            #print(texto)
-            #reemplazo de algbunos caracteres y de el formato de la fecha y hora 
-            estacionunam=open(dirtxt)
-            texto0=estacionunam.read()
+            try:
+                with open(dirtxt, 'r') as fr:
+                    
+                    lines = fr.readlines()
+
+                    ptr = 1
+
+                    # Abriendo en modo de escritura
+                    with open(dirtxt, 'w') as fw:
+                        for line in lines:
+
+                            # Eliminamos la segunda linea
+                            if ptr != 2:
+                                fw.write(line)
+                            ptr += 1
+                print("Deleted")
+
+            except:
+                print("Oops! No se pudo eliminar fila")
+
+
+            estacion=open(dirtxt)
+            texto0=estacion.read()
             texto1=texto0.replace(" ",",")
             texto2=texto1.replace("---","9999")
             texto3=texto2.replace(",,",",")
@@ -122,15 +122,13 @@ class DescargaPEMBU:
             texto5=texto4.replace(",,,,",",")
             texto6=texto5.replace(fecha_ayer0,fecha_ayerc)
             texto7=texto6.replace(fecha_hoy0,fecha_hoyc)
-            estacionunam1=open(dirtxt,"w")
-            estacionunam1.write(texto7)
-            estacionunam1.close()
-            estacionunam.close()
-
             #print(texto7)
-            
-            estacionunam=open(dirtxt)
-            texto=estacionunam.read()
+            estacion1=open(dirtxt,"w")
+            estacion1.write(texto7)
+            estacion1.close()
+
+            estacion=open(dirtxt)
+            texto=estacion.read()
             texto0=texto.replace("12:00a","00:00")
             texto1=texto0.replace("12:10a","00:10")
             texto2=texto1.replace("12:20a","00:20")
@@ -281,32 +279,29 @@ class DescargaPEMBU:
             texto147=texto146.replace("113:30","23:30")
             texto148=texto147.replace("113:40","23:40")
             texto149=texto148.replace("113:50","23:50")
-            estacionunam1=open(dirtxt,"w")
-            estacionunam1.write(texto149)
-            estacionunam1.close()
-            estacionunam.close()
-            #print(estacionunam1)
-            # Se abre el archivo txt para realizar cambios en algunas palabras y proceder a guardarlo en un archivo csv
-            estacionunam=open(dirtxt)
-            texto0=estacionunam.read()
-            #print(texto0)
-            
+            estacion1=open(dirtxt,"w")
+            estacion1.write(texto149)
+            estacion1.close()
+            estacion.close()
+
+            estacion=open(dirtxt)
+            texto0=estacion.read()
             texto1=texto0.replace(",,",",")
             texto2=texto1.replace(",Date",",Fecha")
-        #Se genera el archivo csv
-            estacionunam1=open(dircsv,"w")
-            estacionunam1.write(texto2)
+            estacion1=open(dircsv,"w")
+            estacion1.write(texto2)
             #print(texto2)
-            estacionunam1.close()
-            estacionunam.close()
-
-            estacion=pd.read_csv(dircsv, usecols=(1,2,3,6,7,8,9,11,12,17,18,23), index_col=0, header=0)
+            estacion1.close()
+            estacion.close()
+        
+            estacion=pd.read_csv(dircsv, usecols=(1,2,3,6,7,8,9,11,12,16,17), index_col=0, header=0)
             #print(estacion)
             estacion.to_csv(dircsv)
+        
 
-            estacionunam=open(dircsv)
-            texto=estacionunam.read()
-            texto1=texto.replace("Out","temperatura")
+            estacion=open(dircsv)
+            nombrescol=estacion.read()
+            texto1=nombrescol.replace("Out","temperatura")
             texto2=texto1.replace("Hum","humedadRelativa")
             texto3=texto2.replace("Pt.","puntoRocio")
             texto4=texto3.replace("Speed.1","velocidadRacha")
@@ -315,16 +310,14 @@ class DescargaPEMBU:
             texto7=texto6.replace("Dir","direccionViento")
             texto8=texto7.replace("Bar","presionBar")
             texto9=texto8.replace("Rain","lluvia")
-            texto10=texto9.replace("Index.3","UV")
-            #print(texto10)
-            estacionunam1=open(dircsv,"w")
-            estacionunam1.write(texto10)
-            estacionunam.close()
-            estacionunam1.close()
 
+            estacion1=open(dircsv,"w")
+            estacion1.write(texto9)
+            estacion1.close()
+            estacion.close()
 
-            estacionunam=open(dircsv)
-            texto=estacionunam.read()
+            estacion=open(dircsv)
+            texto=estacion.read()
             texto1=texto.replace("NNE","22.5")
             texto2=texto1.replace("ENE","67.5")
             texto3=texto2.replace("ESE","112.5")
@@ -337,99 +330,88 @@ class DescargaPEMBU:
             texto10=texto9.replace("SE","135")
             texto11=texto10.replace("SW","225")
             texto12=texto11.replace("NW","315")
-            estacionunam1=open(dircsv,"w")
-            estacionunam1.write(texto12)
-            estacionunam.close()
-            estacionunam1.close()
+            estacion1=open(dircsv,"w")
+            estacion1.write(texto12)
+            estacion1.close()
+            estacion.close()
 
-            estacionunam=open(dircsv)
-            texto=estacionunam.read()
+            estacion=open(dircsv)
+            texto=estacion.read()
             texto1=texto.replace("N","360")
             texto2=texto1.replace("E","90")
             texto3=texto2.replace("S","180")
             texto4=texto3.replace("W","270")
-            estacionunam1=open(dircsv,"w")
-            estacionunam1.write(texto4)
-            estacionunam1.close()
-            estacionunam.close()
-
-            estacionunam=pd.read_csv(dircsv, index_col=0, header=0)
-            #print(estacionunam)
+            estacion1=open(dircsv,"w")
+            estacion1.write(texto4)
+            estacion1.close()
+            estacion.close()
             
-            estacionunam['fechaHora']=estacionunam['Fecha'].map(str)  + ' ' + estacionunam['Time'].map(str)
-            estacionunam
-            #print(estacionunam)
-            estacionunam.to_csv(dircsv)
+            estacion=pd.read_csv(dircsv, index_col=0, header=0)
+            #print(estacion)
+            estacion['fechaHora']=estacion['Fecha'].map(str)  + ' ' + estacion['Time'].map(str)
+            estacion
+            #print(estacion)
+            estacion.to_csv(dircsv)
 
 
             DF=pd.read_csv(dircsv, index_col=0)
-            DF['idEstacion']=np.where(DF['Time'] !='[]',self.nombre, ' ', )
+            DF['idEstacion']=np.where(DF['Time'] !='[]',self.clave, ' ', )
             #print(DF)
             DF.to_csv(dircsv)
 
+            estacion=pd.read_csv(dircsv, usecols=(3,4,5,6,7,8,9,10,11,12,13), index_col=0, header=0)
+            #print(estacion)
+            estacion.to_csv(dircsv)
 
-            #print(texto)
-            
-            estacionunam=pd.read_csv(dircsv,  usecols=(3,4,5,6,7,8,9,10,11,12,13), index_col=0, header=0)
-            print(estacionunam)
-            estacionunam.to_csv(dircsv)
 
-            print("Se han descargado correctamente los datos de la estacion ",self.nombre)
+            try:
+                estacion=pd.read_csv(dircsv, index_col=0)
+                filter= (estacion['fechaHora'] >= fecha_ayer1) & (estacion['fechaHora'] > fecha_ayer1)
+                filtrado=estacion.loc[filter]
+                print(filtrado)
+                filtrado.to_csv(dircsv)
+                print("Filtrado")
+            except:
+                print("No se logro filtrar datos por fecha actual")#hola
+
+
+            print('Datos de la estación estacion listos')
         except:
-            print("Hubo un problema al obtener los datos de la estacion",self.nombre)
+            print("No se logro obtener datos de la estación")
             try:
                 remove(dircsv)
             except:
                 print("No esxite el archivo "+ dircsv)
-            
-#Lista de estaciones de PEMBU
-  
-prepa1=DescargaPEMBU("enp1")
-prepa1.proceso()
 
-prepa2=DescargaPEMBU("enp2")
-prepa2.proceso()
+agricola=DescargaSGIRPC("iztacalco","AGOS")
+agricola.proceso()
 
-#Estacion fuera de servicio
-# prepa3=DescargaPEMBU("enp3")
-# prepa3.proceso()
+azcapotzalco=DescargaSGIRPC("azcapotzalco","FERS")
+azcapotzalco.proceso()
 
-prepa4=DescargaPEMBU("enp4")
-prepa4.proceso()
+cuautepec=DescargaSGIRPC("cuautepec","CUAUS")
+cuautepec.proceso()
 
-#Fuera de linea desde diciembre de 2022
-# prepa5=DescargaPEMBU("enp5")
-# prepa5.proceso()
+santeFe=DescargaSGIRPC("cuajimalpa","STFS")
+santeFe.proceso()
 
-prepa6=DescargaPEMBU("enp6")
-prepa6.proceso()
+sgirpc=DescargaSGIRPC("juarez", "SGIRPC")
+sgirpc.proceso()
 
-prepa7=DescargaPEMBU("enp7")
-prepa7.proceso()
+MHidalgo=DescargaSGIRPC("miguelhidalgo","LEGS")
+MHidalgo.proceso()
 
-prepa8=DescargaPEMBU("enp8")
-prepa8.proceso()
+MilpaAlta=DescargaSGIRPC("milpaalta","MPAS")
+MilpaAlta.proceso()
 
-#Prepa 9 no funciona desde noviembre del 2022.
-# prepa9=DescargaPEMBU("enp9")
-# prepa9.proceso()
+lomas=DescargaSGIRPC("iztapa1","LOMS")
+lomas.proceso()
 
+tlalpan=DescargaSGIRPC("topilejo","TPJS")
+tlalpan.proceso()
 
-ccha=DescargaPEMBU("ccha")
-ccha.proceso()
+ursula=DescargaSGIRPC("coyoacan","SURS")
+ursula.proceso()
 
-cchn=DescargaPEMBU("cchn")
-cchn.proceso()
-
-ccho=DescargaPEMBU("ccho")
-ccho.proceso()
-
-cchs=DescargaPEMBU("cchs")
-cchs.proceso()
-
-cchv=DescargaPEMBU("cchv")
-cchv.proceso()
-
-#ICAyCC esta fuerta de servicio
-# ICAyCC=DescargaPEMBU("ICAyCC")
-# ICAyCC.proceso()
+xochimilco=DescargaSGIRPC("xochimilco","TLHS")
+xochimilco.proceso()
