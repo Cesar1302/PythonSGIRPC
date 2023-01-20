@@ -75,7 +75,8 @@ def timer(timer_runs):
 
         final=datetime.now()
         print(final)
-        time.sleep(30)   # 15 minutos=850.
+        print("El programa se volverá a ejecutar 10 minutos despues de",final)
+        time.sleep(60)   # El tiempo esta dado en segundos 
 timer_runs = threading.Event()
 timer_runs.set()
 t = threading.Thread(target=timer, args=(timer_runs,))
